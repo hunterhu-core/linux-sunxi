@@ -1146,7 +1146,7 @@ static void sw_mci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			smc_host->mod_clk = ios->clock;
 		smc_host->card_clk = ios->clock;
 		if (smc_host->mod_clk > 45000000)
-			smc_host->mod_clk = 45000000;
+			smc_host->mod_clk = 25000000;
 		sw_mci_set_clk(smc_host, smc_host->card_clk);
 		last_clock[id] = ios->clock;
 		usleep_range(50000, 55000);

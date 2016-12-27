@@ -115,7 +115,7 @@ void dump_trace(struct task_struct *task, struct pt_regs *regs,
 		unsigned long *stack, unsigned long bp,
 		const struct stacktrace_ops *ops, void *data)
 {
-	const unsigned cpu = get_cpu_light();
+	const unsigned cpu = get_cpu();
 	unsigned long *irq_stack_end =
 		(unsigned long *)per_cpu(irq_stack_ptr, cpu);
 	unsigned used = 0;
@@ -192,7 +192,7 @@ void dump_trace(struct task_struct *task, struct pt_regs *regs,
 	 * This handles the process stack:
 	 */
 	bp = ops->walk_stack(tinfo, stack, bp, ops, data, NULL, &graph);
-	put_cpu_light();
+	put_cpu();
 }
 EXPORT_SYMBOL(dump_trace);
 
@@ -206,7 +206,7 @@ show_stack_log_lvl(struct task_struct *task, struct pt_regs *regs,
 	int cpu;
 	int i;
 
-	migrate_disable();
+	preempt_disable();
 	cpu = smp_processor_id();
 
 	irq_stack_end	= (unsigned long *)(per_cpu(irq_stack_ptr, cpu));
@@ -239,7 +239,7 @@ show_stack_log_lvl(struct task_struct *task, struct pt_regs *regs,
 		printk(KERN_CONT " %016lx", *stack++);
 		touch_nmi_watchdog();
 	}
-	migrate_enable();
+	preempt_enable();
 
 	printk(KERN_CONT "\n");
 	show_trace_log_lvl(task, regs, sp, bp, log_lvl);
